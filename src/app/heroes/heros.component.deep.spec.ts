@@ -127,4 +127,25 @@ describe('HeroesComponent (deep)', () => {
 
     });
 
+    it('should "add new hero" to the hero list when the add button is clicked', () => {
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        fixture.detectChanges();
+
+        const name = 'Batman';
+        mockHeroService.addHero.and.returnValue(of({id: 5, name: name, strength: 30}));
+        // grab native element, not debug one so we have reference to the DOM element
+        const inputElement = fixture.debugElement.query(By.css('input')).nativeElement;
+        const addButton = fixture.debugElement.query(By.css('.add-hero'));
+
+        inputElement.value = name;
+        // pass "null" as event object not important
+        addButton.triggerEventHandler('click', null);
+        fixture.detectChanges();
+
+        const heroText = fixture.debugElement.query(By.css('ul')).nativeElement.textContent;
+
+        // Expect hero text will contain the name we created
+        expect(heroText).toContain(name);
+    });
+
 });
