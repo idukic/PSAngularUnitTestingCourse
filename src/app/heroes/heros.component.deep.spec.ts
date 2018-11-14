@@ -91,19 +91,40 @@ describe('HeroesComponent (deep)', () => {
      */
     it(`should call "heroService.deleteHero" when the 
         Hero Component's delete button is clicked (2)`, () => {
-            // check if called with correct hero, watch/spy and see if 'delete' method called
             spyOn(fixture.componentInstance, 'delete');
-
             mockHeroService.getHeroes.and.returnValue(of(HEROES));
-
             fixture.detectChanges();
 
             const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
 
+            // Grab compoennt instance, componnet class
+
+            // let heroComponent: HeroComponent;
+            // heroComponent = heroComponents[0].componentInstance;
+            // heroComponent.delete.emit(undefined);
             (<HeroComponent>heroComponents[0].componentInstance).delete.emit(undefined);
 
             expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
 
         });
+
+    /**
+     * Raising event on child directive
+     */
+    it(`should call "heroService.deleteHero" when the 
+    Hero Component's delete button is clicked (3)`, () => {
+        spyOn(fixture.componentInstance, 'delete');
+        mockHeroService.getHeroes.and.returnValue(of(HEROES));
+        fixture.detectChanges();
+
+        const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+        // Trigger delete event on debug element
+        // We do not know if child component has 'delete' event
+        heroComponents[0].triggerEventHandler('delete', null);
+
+        expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
+
+    });
 
 });
