@@ -59,4 +59,31 @@ describe('HeroesComponent (deep)', () => {
 
     });
 
+    /**
+     * Triggering event on a subcomponent that will get raised to the parent component
+     * HeroesComponent > HeroCompoennt
+     */
+
+    it(`should call "heroService.deleteHero" when the 
+     Hero Component's delete button is clicked`, () => {
+            // check if called with correct hero, watch/spy and see if 'delete' method called
+            spyOn(fixture.componentInstance, 'delete');
+
+            mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+            fixture.detectChanges();
+
+            // 1) handle all child components by creating a new variable that is collection of debug elements
+            const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+            // 2) Click the button
+            // create dummy object to stop propagation, when called, nothing will happen, 
+            // this is OK as we just need code to be able to call stopPropagation to avoid erroring out
+            heroComponents[0].query(By.css('button'))
+                .triggerEventHandler('click', { stopPropagation: () => { } });
+
+            expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
+
+        });
+
 });
