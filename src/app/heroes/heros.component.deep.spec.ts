@@ -65,7 +65,7 @@ describe('HeroesComponent (deep)', () => {
      */
 
     it(`should call "heroService.deleteHero" when the 
-     Hero Component's delete button is clicked`, () => {
+     Hero Component's delete button is clicked (1)`, () => {
             // check if called with correct hero, watch/spy and see if 'delete' method called
             spyOn(fixture.componentInstance, 'delete');
 
@@ -81,6 +81,26 @@ describe('HeroesComponent (deep)', () => {
             // this is OK as we just need code to be able to call stopPropagation to avoid erroring out
             heroComponents[0].query(By.css('button'))
                 .triggerEventHandler('click', { stopPropagation: () => { } });
+
+            expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
+
+        });
+
+    /**
+     * Emitting Events from Children
+     */
+    it(`should call "heroService.deleteHero" when the 
+        Hero Component's delete button is clicked (2)`, () => {
+            // check if called with correct hero, watch/spy and see if 'delete' method called
+            spyOn(fixture.componentInstance, 'delete');
+
+            mockHeroService.getHeroes.and.returnValue(of(HEROES));
+
+            fixture.detectChanges();
+
+            const heroComponents = fixture.debugElement.queryAll(By.directive(HeroComponent));
+
+            (<HeroComponent>heroComponents[0].componentInstance).delete.emit(undefined);
 
             expect(fixture.componentInstance.delete).toHaveBeenCalledWith(HEROES[0]);
 
